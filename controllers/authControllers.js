@@ -1,6 +1,7 @@
 const { userModel } = require("../models/user-model");
 const bcrypt = require('bcrypt');
 const {generateToken} = require('../utils/generateTokens')
+const flash = require("connect-flash");
 
 
 module.exports.registerUser = async function (req, res){
@@ -42,8 +43,10 @@ module.exports.loginUser = async function (req, res) {
     const user = await userModel.findOne({email:email});
     
     //If user not found
-    if(!user) return res.send("User not found");
-
+    if(!user){ 
+        req.flash("User not found");
+        return res.redirect("/login");
+    }
     bcrypt.compare(password, user.password, function(err, result){
         if(result){
             let token = generateToken(user);
@@ -51,13 +54,13 @@ module.exports.loginUser = async function (req, res) {
             res.send("You are logged In");
         }
         else{
-            res.send("Invalid Login Credentials");
+            req.flash("Invalid Login Credentials");
         }
     });
 
 };
 
-module.exports.userLogOut = function name(params) {
+module.exports.userLogOut = function name(req, res) {
     res.cookie("token","");
     res.redirect("/");
 }

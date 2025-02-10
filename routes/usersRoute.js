@@ -3,9 +3,16 @@ const {registerUser, loginUser,userLogOut} = require('../controllers/authControl
 const router = express.Router();
 
 router.get('/',(req, res)=>{
-    res.send("Hello there from user side");
+    res.render('/');
 })
 router.post('/register',registerUser);
 router.post('/login', loginUser);
-router.get('/logout', userLogOut)
+router.get('/logout', userLogOut);
+router.get('/login', (req, res)=>{
+    res.render('admin');
+});
+
+router.get('/register', (req, res)=>{
+    res.render('index');
+});
 module.exports = router;

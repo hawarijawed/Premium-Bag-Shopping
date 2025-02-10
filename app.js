@@ -5,8 +5,9 @@ const path = require('path');
 const ownersRoute = require('./routes/ownerRoute');
 const usersRoute = require('./routes/usersRoute');
 const productsRoute = require('./routes/productsRoute');
-// const expressSession = require("express-session");
-// const flash = require("connect-flash");
+const indexRouter = require('./routes/index');
+const expressSession = require("express-session");
+const flash = require("connect-flash");
 const db = require('./config/mongoose-connection');//connects the databse
 
 
@@ -16,14 +17,19 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-// app.use(
-//     expressSession({
-//         resave:false,
-//         saveUninitialized: false,
-//         secret: process.env.EXPRESS_SESSION_SECRET,
-//     })
-// );
-// app.use(flash);
+app.use(expressSession({
+    secret: "yourSecretKey",
+    resave: false,
+    saveUninitialized: true
+}));
+
+app.use(flash());
+
+app.use((req, res, next) => {
+    res.locals.messages = req.flash('error'); // make flash messages accessible in views
+    next();
+});
+
 app.use(express.static(path.resolve('./public')));
 app.set("view engine", "ejs");
 
@@ -32,6 +38,7 @@ app.get("/", (req, res)=>{
     //res.send("Aur batao");
     res.render("shop");
 });
+app.use("/index", indexRouter);
 app.use("/owners", ownersRoute);
 app.use("/users", usersRoute);
 app.use("/products", productsRoute);
