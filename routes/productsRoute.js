@@ -30,7 +30,7 @@ router.post('/create', upload.single("image"), async (req, res) => {
         });
 
         req.flash("success","Product created successfully");
-        res.redirect('./owners/admin');
+        res.redirect('../owners/admin');
     } catch (err) {
         console.error(err);  // Log the error for debugging
         res.status(500).send({ error: "Failed to create product" });

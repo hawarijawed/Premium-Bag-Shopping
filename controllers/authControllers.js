@@ -26,7 +26,8 @@ module.exports.registerUser = async function (req, res){
 
                     let token = generateToken(user);
                     res.cookie("token", token);
-                    res.send("user created successfully");
+                    req.flash("success","user created successfully");
+                    res.redirect("/");
                 }
             })
         })
@@ -51,7 +52,7 @@ module.exports.loginUser = async function (req, res) {
         if(result){
             let token = generateToken(user);
             res.cookie("token", token);
-            res.send("You are logged In");
+            res.redirect("/index/shop");
         }
         else{
             req.flash("Invalid Login Credentials");
